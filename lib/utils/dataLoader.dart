@@ -1,7 +1,13 @@
+import 'dart:developer';
+
+import 'package:calorica/providers/local_providers/fooditemsProvider.dart';
 import 'package:calorica/providers/local_providers/productProvider.dart';
 import 'package:calorica/providers/local_providers/userProductsProvider.dart';
 
 import 'package:calorica/models/dbModels.dart';
+
+import '../providers/local_providers/mealsProvider.dart';
+import '../providers/local_providers/userMealsProvider.dart';
 
 List<String> productData = [
   "Баранина и дичь;Антилопа;114;22,38;2,03;0",
@@ -11168,9 +11174,9 @@ List<String> productData = [
 ];
 
 startLoadData() async {
-  // await DBProductProvider.db.firstCreateTable();
-  // await DBUserProductsProvider.db.firstCreateTable();
-
+  await DBFoodItemProvider.db.firstCreateTable();
+  await DBMealProvider.db.firstCreateTable();
+  await DBUserMealProvider.db.firstCreateTable();
   for (var i = 0; i < productData.length; i++) {
     var data = productData[i].split(";");
     for (var y = 2; y < data.length; y++) {

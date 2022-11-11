@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:calorica/models/dbModels.dart';
 
 import 'doubleRounder.dart';
+import 'method.dart';
 
 class DietParams {
   double calory;
@@ -70,7 +71,7 @@ DietParams selectDiet(User user) {
           6.25 * user.height -
           (4.92 * user.age) +
           genderDelta) *
-      user.workModel;
+      checkDouble(user.workModel);
 
   diet.calory = roundDouble(caloryLimit, 1);
   diet.squi = roundDouble(squiPercent * caloryLimit / 4, 1);

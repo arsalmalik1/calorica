@@ -30,7 +30,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-
+  cloud_firestore: ^2.5.1
+  firebase_auth: ^3.1.0
+  firebase_core: ^1.6.0
+  fluttertoast: ^8.0.8
   #Logic and data
 
   sqflite: 
@@ -45,7 +48,7 @@ dependencies:
   charts_flutter: 
   carousel_slider: 
   flutter_svg: 
-
+  get: ^4.6.1
   #Firebase
 
   # firebase_admob:
@@ -63,7 +66,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-
+  shared_preferences: ^2.0.13
+  platform_device_id: ^1.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -80,6 +84,8 @@ flutter:
   assets:
    - assets/bg.png
    - assets/bg2.png
+   - assets/food.png
+
    - assets/selector/slim.svg
    - assets/svg/noMeal.svg
    - assets/svg/dev.svg

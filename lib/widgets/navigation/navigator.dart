@@ -1,12 +1,18 @@
 //@dart=2.9
 import 'package:calorica/design/theme.dart';
+import 'package:calorica/meals/meals.dart';
 import 'package:calorica/pages/product/products_list.dart';
 import 'package:calorica/pages/home/home.dart';
 import 'package:calorica/pages/stats/main_stats.dart';
+import 'package:calorica/pages/wishlist/wishlist.dart';
 import 'package:flutter/material.dart';
 
+import '../../pages/product/food_item_list.dart';
+import '../../pages/stats/history.dart';
+import '../../providers/local_providers/mealsProvider.dart';
 import 'bottom_bar/bottom_bar.dart';
 
+// ignore: must_be_immutable
 class NavigatorPage extends StatefulWidget {
   NavigatorPage({int index}) : _index = index;
   int _index;
@@ -24,7 +30,8 @@ class _NavigatorPageState extends State<NavigatorPage> {
   List<Widget> pages = <Widget>[
     MainStats(),
     Home(),
-    AddPage(),
+    FoodItemList(),
+    WishList()
   ];
 
   @override
@@ -61,7 +68,8 @@ class _NavigatorPageState extends State<NavigatorPage> {
           items: [
             Icons.bar_chart_rounded,
             Icons.home_rounded,
-            Icons.add,
+            Icons.fastfood_outlined,
+            Icons.food_bank,
           ],
           onSelected: (int i) {
             setState(() {

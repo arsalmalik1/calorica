@@ -104,6 +104,12 @@ class DesignTheme {
     fontSize: 44,
     color: blackTextColor,
   );
+  static const TextStyle blackText16 = TextStyle(
+    fontFamily: 'Montserrat',
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+    color: blackTextColor,
+  );
 
   static const TextStyle bigText24 = TextStyle(
     fontFamily: 'Montserrat',
@@ -188,6 +194,12 @@ class DesignTheme {
     letterSpacing: -0.2,
     color: DesignTheme.gray36Color,
   );
+  static const TextStyle primeTextBold = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 18,
+    letterSpacing: -0.2,
+    color: DesignTheme.gray36Color,
+  );
 
   static const TextStyle primeTextBig = TextStyle(
     fontWeight: FontWeight.w600,
@@ -215,7 +227,11 @@ class DesignTheme {
         fontSize: 16,
         color: CustomTheme.mainColor,
       );
-
+  static TextStyle get inputTextLight => TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        color: Colors.white,
+      );
   static const TextStyle labelSearchText = TextStyle(
     fontWeight: FontWeight.w300,
     fontSize: 16,
@@ -235,6 +251,13 @@ class DesignTheme {
     fontSize: 20,
     letterSpacing: 0.2,
     color: gray170Color,
+  );
+
+  static const TextStyle labelSearchTextBiggerLight = TextStyle(
+    fontWeight: FontWeight.w300,
+    fontSize: 20,
+    letterSpacing: 0.2,
+    color: Colors.white,
   );
 
   static const TextStyle labelTextBiggerBlack = TextStyle(

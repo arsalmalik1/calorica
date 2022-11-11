@@ -1,9 +1,15 @@
 //@dart=2.9
+import 'dart:developer';
+
 import 'package:calorica/design/theme.dart';
 import 'package:calorica/common/theme/theme.dart';
 import 'package:calorica/models/dbModels.dart';
+import 'package:calorica/models/wishlist_meal_product_model.dart';
 import 'package:calorica/pages/stats/barGraph.dart';
 import 'package:calorica/pages/stats/lineWeekGraph.dart';
+import 'package:calorica/providers/local_providers/dashMealProductProvider.dart';
+import 'package:calorica/providers/local_providers/dashMealProvider.dart';
+import 'package:calorica/providers/local_providers/mealHistoryProvider.dart';
 import 'package:calorica/providers/local_providers/userProductsProvider.dart';
 
 import 'package:calorica/utils/dietSelector.dart';
@@ -16,7 +22,11 @@ import 'package:calorica/widgets/textHelper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../../utils/dateHelpers/dateFromInt.dart';
+import '../../utils/doubleRounder.dart';
+import '../days/day_meals.dart';
 import 'widgets/widgets.dart';
 
 class MainStats extends StatefulWidget {
@@ -46,7 +56,6 @@ class _MainStatsState extends State<MainStats> {
 
   bool isAutoPlay = true;
 
-  //TODO: REFACTOR THIS
   @override
   void initState() {
     super.initState();
@@ -61,85 +70,219 @@ class _MainStatsState extends State<MainStats> {
         caloryLimitDeltaL = caloryLimit * 0.7;
         caloryLimitDeltaR = caloryLimit * 1.2;
       });
+      getDashMealProduct();
+      // DBUserProductsProvider.db.getTodayProducts().then((todayProd) {
+      //   DBUserProductsProvider.db.getYesterdayProducts().then((yesterdayProd) {
+      //     setState(() {
+      //       todayParams = getProductsParamsSum(todayProd);
+      //       yesterdayParams = getProductsParamsSum(yesterdayProd);
+      //     });
+      //     setState(() {
+      //       _chartData = createSampleData(weekStats);
+      //       _seriesData = generateData(
+      //         yesterdayParams,
+      //         todayParams,
+      //         caloryLimitDeltaR,
+      //         caloryLimitDeltaL,
+      //       );
+      //       chartsWidgetList.removeLast();
+      //       chartsWidgetList.add(
+      //         getBarGraph(
+      //           context,
+      //           _seriesData,
+      //           caloryLimitDeltaL,
+      //           caloryLimitDeltaR,
+      //           todayParams,
+      //           yesterdayParams,
+      //         ),
+      //       );
+      //       chartsWidgetList.add(
+      //         getLineGraph(
+      //           context,
+      //           _chartData,
+      //         ),
+      //       );
+      //       lineTextList.add(getOtherParamTextColumn(
+      //         todayParams,
+      //         yesterdayParams,
+      //         ' кКалорий',
+      //         getParamText(todayParams, yesterdayParams, caloryLimitDeltaR,
+      //             caloryLimitDeltaL),
+      //       ));
+      //       lineTextList.add(
+      //         getOtherParamTextColumn(
+      //           todayParams.squi,
+      //           yesterdayParams.squi,
+      //           " г. белков",
+      //           getOtherParamText(todayParams.squi, yesterdayParams.squi),
+      //         ),
+      //       );
+      //       lineTextList.add(
+      //         getOtherParamTextColumn(
+      //           todayParams.fat,
+      //           yesterdayParams.fat,
+      //           " г. жиров",
+      //           getOtherParamText(todayParams.fat, yesterdayParams.fat),
+      //         ),
+      //       );
+      //       lineTextList.add(
+      //         getOtherParamTextColumn(
+      //           todayParams.carboh,
+      //           yesterdayParams.carboh,
+      //           " г. углеводов",
+      //           getOtherParamText(todayParams.carboh, yesterdayParams.carboh),
+      //         ),
+      //       );
+      //       lineTextList.add(
+      //         getOtherParamTextColumn(
+      //           todayParams.grams,
+      //           yesterdayParams.grams,
+      //           " грамм",
+      //           getOtherParamText(todayParams.grams, yesterdayParams.grams),
+      //         ),
+      //       );
+      //     });
+      //   });
+      // });
+    });
+  }
 
-      DBUserProductsProvider.db.getTodayProducts().then((todayProd) {
-        DBUserProductsProvider.db.getYesterdayProducts().then((yesterdayProd) {
-          setState(() {
-            todayParams = getProductsParamsSum(todayProd);
-            yesterdayParams = getProductsParamsSum(yesterdayProd);
-          });
+  getDashMealProduct() async {
+    List<UserProduct> _Todayproducts = [];
+    List<UserProduct> _yesterdayProducts = [];
 
-          setState(() {
-            _chartData = createSampleData(weekStats);
-            _seriesData = generateData(
-              yesterdayParams,
-              todayParams,
-              caloryLimitDeltaR,
-              caloryLimitDeltaL,
-            );
-
-            chartsWidgetList.removeLast();
-
-            chartsWidgetList.add(
-              getBarGraph(
-                context,
-                _seriesData,
-                caloryLimitDeltaL,
-                caloryLimitDeltaR,
-                todayParams,
-                yesterdayParams,
-              ),
-            );
-
-            chartsWidgetList.add(
-              getLineGraph(
-                context,
-                _chartData,
-              ),
-            );
-
-            lineTextList.add(getOtherParamTextColumn(
-              todayParams,
-              yesterdayParams,
-              ' кКалорий',
-              getParamText(todayParams, yesterdayParams, caloryLimitDeltaR,
-                  caloryLimitDeltaL),
-            ));
-            lineTextList.add(
-              getOtherParamTextColumn(
-                todayParams.squi,
-                yesterdayParams.squi,
-                " г. белков",
-                getOtherParamText(todayParams.squi, yesterdayParams.squi),
-              ),
-            );
-            lineTextList.add(
-              getOtherParamTextColumn(
-                todayParams.fat,
-                yesterdayParams.fat,
-                " г. жиров",
-                getOtherParamText(todayParams.fat, yesterdayParams.fat),
-              ),
-            );
-            lineTextList.add(
-              getOtherParamTextColumn(
-                todayParams.carboh,
-                yesterdayParams.carboh,
-                " г. углеводов",
-                getOtherParamText(todayParams.carboh, yesterdayParams.carboh),
-              ),
-            );
-            lineTextList.add(
-              getOtherParamTextColumn(
-                todayParams.grams,
-                yesterdayParams.grams,
-                " грамм",
-                getOtherParamText(todayParams.grams, yesterdayParams.grams),
-              ),
-            );
-          });
+    await DBDashMealProvider.db
+        .getDashDateBaseMeals(echoDate(DateTime.now()), 1)
+        .then((meals) async {
+      for (DashMeal meal in meals) {
+        await DBDashMealProductProvider.db
+            .getProductByMealID(meal.id)
+            .then((products) {
+          for (WishlistMealProduct product in products) {
+            _Todayproducts.add(UserProduct(
+                id: product.id,
+                name: product.name,
+                fat: product.fat,
+                calory: product.calory,
+                category: product.category,
+                squi: product.squi,
+                carboh: product.carboh,
+                grams: product.gram,
+                productId: product.productID));
+          }
         });
-      });
+      }
+    });
+
+    await DBDashMealHistoryProvider.db
+        .getDashDateBaseMeals(
+            echoDate(DateTime.now().subtract(Duration(days: 1))), 1)
+        .then((meals) async {
+      for (DashMeal meal in meals) {
+        await DBDashMealProductProvider.db
+            .getProductByMealID(meal.id)
+            .then((products) {
+          for (WishlistMealProduct product in products) {
+            _yesterdayProducts.add(UserProduct(
+                id: product.id,
+                name: product.name,
+                fat: product.fat,
+                calory: product.calory,
+                category: product.category,
+                squi: product.squi,
+                carboh: product.carboh,
+                grams: product.gram,
+                productId: product.productID));
+          }
+        });
+      }
+    });
+    // if (_Todayproducts.isNotEmpty && _yesterdayProducts.isNotEmpty) {
+    setProductsValues(_Todayproducts, _yesterdayProducts);
+    // }
+  }
+
+  int echoDate(DateTime nowDate) {
+    var _date = DateTime(nowDate.year, nowDate.month, nowDate.day);
+
+    int now = epochFromDate(_date);
+    return now;
+  }
+
+  setProductsValues(todayProd, yesterdayProd) {
+    setState(() {
+      todayParams = getProductsParamsSum(todayProd);
+      yesterdayParams = getProductsParamsSum(yesterdayProd);
+    });
+
+    setState(() {
+      _chartData = createSampleData(weekStats);
+      _seriesData = generateData(
+        yesterdayParams,
+        todayParams,
+        caloryLimitDeltaR,
+        caloryLimitDeltaL,
+      );
+
+      chartsWidgetList.removeLast();
+
+      chartsWidgetList.add(
+        getBarGraph(
+          context,
+          _seriesData,
+          caloryLimitDeltaL,
+          caloryLimitDeltaR,
+          todayParams,
+          yesterdayParams,
+        ),
+      );
+
+      chartsWidgetList.add(
+        getLineGraph(
+          context,
+          _chartData,
+        ),
+      );
+
+      lineTextList.add(getOtherParamTextColumn(
+        todayParams,
+        yesterdayParams,
+        ' кКалорий',
+        getParamText(
+            todayParams, yesterdayParams, caloryLimitDeltaR, caloryLimitDeltaL),
+      ));
+      lineTextList.add(
+        getOtherParamTextColumn(
+          todayParams.squi,
+          yesterdayParams.squi,
+          " г. белков",
+          getOtherParamText(todayParams.squi, yesterdayParams.squi),
+        ),
+      );
+      lineTextList.add(
+        getOtherParamTextColumn(
+          todayParams.fat,
+          yesterdayParams.fat,
+          " г. жиров",
+          getOtherParamText(todayParams.fat, yesterdayParams.fat),
+        ),
+      );
+      lineTextList.add(
+        getOtherParamTextColumn(
+          todayParams.carboh,
+          yesterdayParams.carboh,
+          " г. углеводов",
+          getOtherParamText(todayParams.carboh, yesterdayParams.carboh),
+        ),
+      );
+      lineTextList.add(
+        getOtherParamTextColumn(
+          todayParams.grams,
+          yesterdayParams.grams,
+          " грамм",
+          getOtherParamText(todayParams.grams, yesterdayParams.grams),
+        ),
+      );
     });
   }
 
@@ -191,7 +334,8 @@ class _MainStatsState extends State<MainStats> {
                       splashColor: CustomTheme.mainColor,
                       hoverColor: CustomTheme.mainColor,
                       onPressed: () {
-                        Navigator.pushNamed(context, '/history');
+                        Get.to(() => DayMeals());
+                        // Navigator.pushNamed(context, '/history');
                       },
                       icon: Icon(
                         Icons.arrow_forward_ios,

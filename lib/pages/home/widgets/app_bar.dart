@@ -1,75 +1,156 @@
 //@dart=2.9
 import 'package:calorica/design/theme.dart';
 import 'package:calorica/models/range.dart';
+import 'package:calorica/providers/local_providers/dashMealProductProvider.dart';
+import 'package:calorica/providers/local_providers/extraProductProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-class HomeAppBar extends StatelessWidget {
-  const HomeAppBar({
+import '../../../providers/local_providers/dashMealProvider.dart';
+import '../../product/widgets/product_param_panel.dart';
+import '../home.dart';
+
+class HomeAppBar extends StatefulWidget {
+  HomeAppBar({
     Key key,
+    this.onPress,
     @required this.name,
     @required this.surname,
     @required this.calory,
     @required this.squi,
     @required this.fat,
     @required this.carboh,
+    this.id,
   }) : super(key: key);
-
+  final int id;
   final String name;
   final String surname;
   final RangeGraphData calory;
   final RangeGraphData squi;
   final RangeGraphData fat;
   final RangeGraphData carboh;
+  Function onPress;
+  @override
+  State<HomeAppBar> createState() => _HomeAppBarState();
+}
 
+class _HomeAppBarState extends State<HomeAppBar> {
+  bool isEdit = false;
+  TextEditingController nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/editUser');
+        // Navigator.pushNamed(context, '/editUser');
       },
       child: Container(
-        margin: EdgeInsets.only(
-          top: 5,
-          left: 25,
-          right: 25,
-        ),
+        margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 10),
         padding: EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: DesignTheme.shadowByOpacity(0.04),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        if (!isEdit)
+                          Text(
+                            widget.name == null || widget.name == ''
+                                ? 'Meal ${widget.id}'
+                                : widget.name,
+                            style: DesignTheme.bigText3,
+                            textAlign: TextAlign.start,
+                          ),
+                        if (isEdit)
+                          ProductParamPanel(
+                            type: TextInputType.text,
+                            title: "Meal Name",
+                            controller: nameController,
+                            value: null,
+                          ),
+                        if (!isEdit)
+                          IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isEdit = true;
+                                });
+                              },
+                              icon: Icon(Icons.edit)),
+                        if (isEdit)
+                          IconButton(
+                              onPressed: () {
+                                DBDashMealProvider.db.updateNameMeals(
+                                    widget.id, nameController.text);
+
+                                setState(() {
+                                  isEdit = false;
+                                });
+                                Home.of(context).string = "refresh";
+                              },
+                              icon: Icon(Icons.save))
+                      ],
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          DBDashMealProvider.db.deleteDashMeal(widget.id);
+                          DBDashMealProductProvider.db
+                              .deleteProductsByMeal(widget.id)
+                              .then((value) {
+                            print('val: $value');
+                          });
+                          Home.of(context).string = "refresh";
+                          widget.onPress();
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.redAccent,
+                        ))
+                  ],
+                ),
+              ),
+              getBigRangeWidget(widget.calory, context),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      buildUserName(name, surname, context),
-                    ],
-                  ),
-                  getBigRangeWidget(calory, context),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      getRangeWidget(squi, context),
-                      getRangeWidget(fat, context),
-                      getRangeWidget(carboh, context),
-                    ],
-                  ),
+                  getRangeWidget(widget.squi, context),
+                  getRangeWidget(widget.fat, context),
+                  getRangeWidget(widget.carboh, context),
                 ],
               ),
-            ),
-          ],
+              if ((widget.calory?.weigth ?? 0.0) >
+                  (widget.calory?.limit ?? 0.0))
+                Text(
+                  'You have exceeded your calories intake for today.',
+                  style: TextStyle(fontSize: 10),
+                ),
+              if ((widget.squi?.weigth ?? 0.0) > (widget.squi?.limit ?? 0.0))
+                Text(
+                  'You have exceeded your protien intake for today.',
+                  style: TextStyle(fontSize: 10),
+                ),
+              if ((widget.fat?.weigth ?? 0.0) > (widget.fat?.limit ?? 0.0))
+                Text(
+                  'You have exceeded your fat intake for today.',
+                  style: TextStyle(fontSize: 10),
+                ),
+              if ((widget.carboh.weigth ?? 0.0) > (widget.carboh?.limit ?? 0.0))
+                Text(
+                  'You have exceeded your carbo intake for today.',
+                  style: TextStyle(fontSize: 10),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -154,7 +235,9 @@ class HomeAppBar extends StatelessWidget {
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                text: range.weigth.toString(),
+                text: range.weigth != null
+                    ? range.weigth.roundToDouble().toString()
+                    : '0.0',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
@@ -162,7 +245,8 @@ class HomeAppBar extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: ' / ${range.limit} г',
+                    text:
+                        ' / ${range.limit != null ? range.limit.roundToDouble() : 0.0} г',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 9,
@@ -203,7 +287,9 @@ class HomeAppBar extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  range.weigth.toString() + " / " + range.limit.toString(),
+                  range.weigth.toString() +
+                      " / " +
+                      (range.limit == null ? '0.0' : range.limit.toString()),
                   textAlign: TextAlign.end,
                   style: TextStyle(
                     fontWeight: FontWeight.w400,

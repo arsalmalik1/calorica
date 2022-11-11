@@ -1,6 +1,5 @@
 //@dart=2.9
 import 'package:calorica/design/theme.dart';
-import 'package:calorica/common/theme/theme.dart';
 import 'package:calorica/models/dbModels.dart';
 import 'package:flutter/material.dart';
 

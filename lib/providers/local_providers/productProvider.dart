@@ -1,13 +1,17 @@
 //@dart=2.9
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:calorica/models/food_item.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:calorica/models/dbModels.dart';
+
+import '../../utils/dateHelpers/dateFromInt.dart';
 
 class DBProductProvider {
   DBProductProvider._();
@@ -99,9 +103,40 @@ class DBProductProvider {
     var offset = rnd.nextInt(7000);
     final db = await database;
     var res =
-        await db.rawQuery("SELECT * FROM Products LIMIT 20 OFFSET '$offset'");
+        // await db.rawQuery("SELECT * FROM Products LIMIT 20 OFFSET '$offset'");
+        await db.rawQuery("SELECT * FROM Products ORDER BY id DESC");
+
     List<Product> list =
         res.isNotEmpty ? res.map((c) => Product.fromMap(c)).toList() : [];
     return list;
+  }
+
+  Future<List<Product>> getProductByIds(var ids) async {
+    final db = await database;
+
+    // var res = await db.rawQuery("SELECT * FROM Products WHERE id = ($ids)");
+
+    var res = await db.query('Products',
+        where: 'id IN (${List.filled(ids.length, '?').join(',')})',
+        whereArgs: ids);
+    List<Product> list =
+        res.isNotEmpty ? res.map((c) => Product.fromMap(c)).toList() : [];
+    return list;
+  }
+
+  Future<bool> updateProduct(UserProduct product) async {
+    final db = await database;
+    int count = await db.rawUpdate(
+        'UPDATE Products SET name = ?, category = ?, calory = ?, squi = ?, fat = ?, carboh = ? WHERE id = ?',
+        [
+          '${product.name}',
+          '${product.category}',
+          '${product.calory}',
+          '${product.squi}',
+          '${product.fat}',
+          '${product.carboh}',
+          '${product.id}',
+        ]);
+    return count == 1;
   }
 }

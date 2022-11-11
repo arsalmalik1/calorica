@@ -62,4 +62,10 @@ class _AnimatedZoneItemState extends State<AnimatedZoneItem>
       },
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animationController.dispose();
+  }
 }

@@ -1,4 +1,6 @@
 //@dart=2.9
+import 'package:calorica/providers/local_providers/dashMealProvider.dart';
+import 'package:calorica/providers/local_providers/dateProvider.dart';
 import 'package:calorica/providers/local_providers/userProductsProvider.dart';
 import 'package:calorica/utils/doubleRounder.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +9,17 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:calorica/design/theme.dart';
 import 'package:calorica/common/theme/theme.dart';
 import 'package:calorica/models/dbModels.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+import '../product/product.dart';
+import '../product/widgets/product_param_panel.dart';
 
 class DayDatePage extends StatefulWidget {
   String _date;
-  DayDatePage({String date}) : _date = date;
-
+  DayDatePage({String date, this.data, this.dashMeal}) : _date = date;
+  DateProducts data;
+  DashMeal dashMeal;
   @override
   _DayDatePageState createState() => _DayDatePageState(_date);
 }
@@ -28,11 +35,24 @@ class _DayDatePageState extends State<DayDatePage> {
   double fat = 0.0;
   double carboh = 0.0;
   int dateInt;
-
+  bool isEdit = false;
+  TextEditingController nameController = TextEditingController();
   @override
   void initState() {
-    intDate = int.parse(date);
     super.initState();
+
+    setCounters();
+  }
+
+  setCounters() {
+    calory = 0.0;
+    squi = 0.0;
+    fat = 0.0;
+    carboh = 0.0;
+    dateInt = null;
+    intDate = null;
+    print(date);
+    intDate = int.parse(date);
 
     dateInt = int.parse(date);
 
@@ -54,7 +74,8 @@ class _DayDatePageState extends State<DayDatePage> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, "/history");
+              // Navigator.pushNamed(context, "/history");
+              Get.back();
             },
             icon: Icon(
               Icons.arrow_back,
@@ -102,6 +123,7 @@ class _DayDatePageState extends State<DayDatePage> {
                       child: FutureBuilder(
                         future: DBUserProductsProvider.db
                             .getProductsByDate(intDate),
+                        // ignore: missing_return
                         builder: (BuildContext context,
                             AsyncSnapshot<List<UserProduct>> snapshot) {
                           switch (snapshot.connectionState) {
@@ -128,9 +150,21 @@ class _DayDatePageState extends State<DayDatePage> {
                                     itemBuilder: (context, i) {
                                       return InkWell(
                                         child: getProductCard(snapshot.data[i]),
-                                        onTap: () {
-                                          Navigator.pushNamed(context,
-                                              '/addedProduct/${snapshot.data[i].id}/$intDate');
+                                        onTap: () async {
+                                          String result = await Get.to(
+                                            () => ProductPage(
+                                              id: snapshot.data[i].id
+                                                  .toString(),
+                                              userProduct: snapshot.data[i],
+                                            ),
+                                          );
+
+                                          if (result == 'refresh') {
+                                            setCounters();
+                                          }
+
+                                          // Navigator.pushNamed(context,
+                                          //     '/addedProduct/${snapshot.data[i].id}/$intDate');
                                         },
                                       );
                                     },
@@ -161,12 +195,74 @@ class _DayDatePageState extends State<DayDatePage> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      if (!isEdit)
+                        Text(
+                          widget.dashMeal != null
+                              ? widget.dashMeal.name
+                              : '${widget.data.name != null && widget.data.name != '' ? widget.data.name : 'Meal ${widget.data.id}'}',
+                          style: isStringOverSize(date)
+                              ? DesignTheme.bigText3
+                              : DesignTheme.bigText3,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (isEdit)
+                        ProductParamPanel(
+                          type: TextInputType.text,
+                          value: squi,
+                          title: "Meal Name",
+                          controller: nameController,
+                        ),
+                      if (!isEdit)
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isEdit = true;
+                              });
+                            },
+                            icon: Icon(Icons.edit)),
+                      if (isEdit)
+                        IconButton(
+                            onPressed: () {
+                              if (widget.dashMeal != null) {
+                                DBDashMealProvider.db.updateNameMeals(
+                                    widget.dashMeal.id, nameController.text);
+                              } else {
+                                DBDateProductsProvider.db.updateNameProducts(
+                                    widget.data.id, nameController.text);
+                              }
+                              setState(() {
+                                isEdit = false;
+                              });
+                              Get.back(result: 'refresh');
+                            },
+                            icon: Icon(Icons.save))
+                    ],
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        if (widget.data != null) {
+                          DBDateProductsProvider.db
+                              .deleteDateProduct(widget.data.id);
+                          Get.back(result: 'refresh');
+                        }
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ))
+                ],
+              ),
               Text(
                 DateFormat('yyyy-MM-dd')
                     .format(DateTime.fromMillisecondsSinceEpoch(dateInt)),
                 style: isStringOverSize(date)
-                    ? DesignTheme.bigText
-                    : DesignTheme.blackText,
+                    ? DesignTheme.primeText16
+                    : DesignTheme.primeText16,
                 textAlign: TextAlign.start,
               ),
               SizedBox(height: 30),
@@ -227,12 +323,12 @@ class _DayDatePageState extends State<DayDatePage> {
                     splashColor: CustomTheme.mainColor,
                     hoverColor: CustomTheme.mainColor,
                     onPressed: () {
-                      Navigator.pushNamed(
-                          context, '/addedProduct/${data.id}/$intDate');
+                      DBUserProductsProvider.db.deleteById(data.id);
+                      setState(() {});
                     },
                     icon: Icon(
-                      Icons.arrow_forward,
-                      color: CustomTheme.mainColor,
+                      Icons.remove,
+                      color: Colors.red,
                       size: 28,
                     ),
                   ),
@@ -273,8 +369,6 @@ class _DayDatePageState extends State<DayDatePage> {
     }
     return true;
   }
-
-  void addClick() {}
 }
 
 getKBGUText(data) {

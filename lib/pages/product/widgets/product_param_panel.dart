@@ -7,11 +7,16 @@ class ProductParamPanel extends StatelessWidget {
     Key key,
     @required this.title,
     @required this.value,
+    this.type = TextInputType.number,
+    this.onChanged,
+    this.controller,
   }) : super(key: key);
 
   final String title;
   final double value;
-
+  final TextEditingController controller;
+  final Function onChanged;
+  final TextInputType type;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -29,9 +34,15 @@ class ProductParamPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            value.toString(),
+          // Text(
+          //   value.toString(),
+          //   style: DesignTheme.bigMainText,
+          // ),
+          TextField(
+            controller: controller,
             style: DesignTheme.bigMainText,
+            onChanged: onChanged,
+            keyboardType: type,
           ),
           Text(
             title,
