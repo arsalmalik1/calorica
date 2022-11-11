@@ -1,6 +1,7 @@
 //@dart=2.9
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:calorica/utils/dateHelpers/dateFromInt.dart';
 
@@ -160,34 +161,74 @@ class UserProduct {
 
 class DateProducts {
   String ids;
+  String name;
   DateTime date;
   int id;
 
-  DateProducts({
-    this.date,
-    this.id,
-    this.ids,
-  });
+  DateProducts({this.date, this.id, this.ids, this.name});
 
   Map<String, dynamic> toMap() {
-    return {
-      'date': epochFromDate(date),
-      'id': id,
-      'ids': ids,
-    };
+    return {'date': epochFromDate(date), 'id': id, 'ids': ids, 'name': name};
   }
 
   static DateProducts fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
     return DateProducts(
-      date: DateTime.fromMillisecondsSinceEpoch(map['date']),
-      id: map['id'],
-      ids: map['ids'],
-    );
+        date: DateTime.fromMillisecondsSinceEpoch(map['date']),
+        id: map['id'],
+        ids: map['ids'],
+        name: map['name']);
   }
 
   String toJson() => json.encode(toMap());
 
   static DateProducts fromJson(String source) => fromMap(json.decode(source));
+}
+
+class DashMeal {
+  String ids;
+  DateTime date;
+  int id;
+  int mealID;
+  int force;
+  String name;
+  String type;
+  DashMeal(
+      {this.date,
+      this.id,
+      this.ids,
+      this.name,
+      this.force,
+      this.mealID,
+      this.type});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'date': epochFromDate(date),
+      'id': id,
+      'ids': ids,
+      'name': name,
+      'force': force,
+      'meal_id': mealID,
+      'type': type
+    };
+  }
+
+  static DashMeal fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return DashMeal(
+        date: DateTime.fromMillisecondsSinceEpoch(map['date']),
+        id: map['id'],
+        ids: map['ids'],
+        name: map['name'],
+        force: map['force'],
+        mealID: map['meal_id'],
+        type: map['type']);
+  }
+
+  String toJson() => json.encode(toMap());
+
+  static DashMeal fromJson(String source) => fromMap(json.decode(source));
 }

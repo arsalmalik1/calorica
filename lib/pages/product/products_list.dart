@@ -6,8 +6,21 @@ import 'package:calorica/widgets/crads/info_card.dart';
 import 'package:flutter/material.dart';
 
 import 'package:calorica/models/dbModels.dart';
+import 'package:get/get.dart';
+
+import '../forms/fooditem_form.dart';
+import '../wishlist/wishlist_product_card.dart';
+import 'widgets/fooditem_appbar.dart';
 
 class AddPage extends StatefulWidget {
+  AddPage(
+      {this.isMeal = false,
+      this.isWishList = false,
+      this.isDash = false,
+      this.isExtraFood = false});
+
+  bool isMeal, isWishList, isDash, isExtraFood;
+
   @override
   _AddPageState createState() => _AddPageState();
 }
@@ -42,7 +55,13 @@ class _AddPageState extends State<AddPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              ProductsListAppBar(),
+              FooditemsListAppBar(
+                isMeal: widget.isMeal || widget.isWishList ? true : false,
+                onPress: () async {
+                  String refresh = await Get.to(() => const FooditemForm());
+                  setState(() {});
+                },
+              ),
               ProductSearchBar(
                 onChanged: (String text) {
                   startSearch(text);
@@ -57,6 +76,7 @@ class _AddPageState extends State<AddPage> {
                     future: isSaerching
                         ? DBProductProvider.db.getAllProductsSearch(searchText)
                         : DBProductProvider.db.getAllProducts(),
+                    // ignore: missing_return
                     builder: (BuildContext context,
                         AsyncSnapshot<List<Product>> snapshot) {
                       switch (snapshot.connectionState) {
@@ -81,13 +101,37 @@ class _AddPageState extends State<AddPage> {
                               physics: const BouncingScrollPhysics(),
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, i) {
-                                return GestureDetector(
-                                  child: ProductCard(
-                                    product: snapshot.data[i],
-                                  ),
-                                  onTap: () =>
-                                      _openProductPage(snapshot.data[i]),
-                                );
+                                return widget.isWishList
+                                    ? WishlistProductCard(
+                                        onPress: () {
+                                          Get.back(result: snapshot.data[i]);
+                                        },
+                                        check: widget.isMeal ? 'hide' : null,
+                                        product: snapshot.data[i],
+                                      )
+                                    : GestureDetector(
+                                        child: ProductCard(
+                                          check: widget.isMeal
+                                              ? 'hide'
+                                              : widget.isExtraFood
+                                                  ? 'extra'
+                                                  : null,
+                                          product: snapshot.data[i],
+                                          onPress: () {
+                                            if (widget.isExtraFood) {
+                                              Get.back(
+                                                  result: snapshot.data[i]);
+                                            }
+                                          },
+                                        ),
+                                        onTap: () {
+                                          if (widget.isMeal ||
+                                              widget.isExtraFood) {
+                                            Get.back(result: snapshot.data[i]);
+                                          } else {
+                                            _openProductPage(snapshot.data[i]);
+                                          }
+                                        });
                               },
                             );
                           }

@@ -1,91 +1,33 @@
 {
   "project_info": {
-    "project_number": "18677644665",
-    "project_id": "flutter-chat-app-61c03",
-    "storage_bucket": "flutter-chat-app-61c03.appspot.com"
+    "project_number": "909810860543",
+    "project_id": "caloria-cce13",
+    "storage_bucket": "caloria-cce13.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:aca919f6fd7acffaa1c3a8",
-        "android_client_info": {
-          "package_name": "com.alhuda.helper_bazar"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:ba8d1d0fc17e7664a1c3a8",
-        "android_client_info": {
-          "package_name": "com.alhuda.helper_bazar_restaurant"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:ccd6e838d708f0a3a1c3a8",
+        "mobilesdk_app_id": "1:909810860543:android:a7af5f783f0500a5d0e7ca",
         "android_client_info": {
           "package_name": "com.example.calorica"
         }
       },
       "oauth_client": [
         {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
+          "client_id": "909810860543-jj321219blecu7d9v208lv02r4cc4l1f.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
+          "current_key": "AIzaSyCLOQmeLioc4IiJVipX3zodBxK4mM8oMG4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
+              "client_id": "909810860543-jj321219blecu7d9v208lv02r4cc4l1f.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -94,180 +36,27 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:61b9b547dda48bd4a1c3a8",
+        "mobilesdk_app_id": "1:909810860543:android:32011225097a47f3d0e7ca",
         "android_client_info": {
-          "package_name": "com.example.chat"
+          "package_name": "com.example.email_password_login"
         }
       },
       "oauth_client": [
         {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
+          "client_id": "909810860543-jj321219blecu7d9v208lv02r4cc4l1f.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
+          "current_key": "AIzaSyCLOQmeLioc4IiJVipX3zodBxK4mM8oMG4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:f260ac8624f26d96a1c3a8",
-        "android_client_info": {
-          "package_name": "com.example.flutter_kickoff"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:07e13ca7dfb2103ba1c3a8",
-        "android_client_info": {
-          "package_name": "com.official.generation"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:d8eeb77c3e0889e4a1c3a8",
-        "android_client_info": {
-          "package_name": "com.rated.userapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:803ba2ded82a53a9a1c3a8",
-        "android_client_info": {
-          "package_name": "com.youtubetutorial.generation"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "18677644665-h4arkhs2c3n5n7cruhrqu02utareitbn.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.youtubetutorial.generation",
-            "certificate_hash": "a198f35a1a7b97ecd1790afb57872a929d51b7e5"
-          }
-        },
-        {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:18677644665:android:30dca9f7d6a43e3ca1c3a8",
-        "android_client_info": {
-          "package_name": "frezycode.calory_calc"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlrW5HGflcIAFCmk1Knt9bazOUxsDQOOM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "18677644665-eqoc2l0qq3jbavcv5k2d1al74vsij994.apps.googleusercontent.com",
+              "client_id": "909810860543-jj321219blecu7d9v208lv02r4cc4l1f.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -5,11 +5,16 @@ import 'package:flutter/material.dart';
 // ignore: avoid_classes_with_only_static_members
 abstract class CustomTheme {
   static Color get mainColorSimple => Color(0xFF51D684);
+  static Color get mainColorSimpleLight => Color(0xFFFFFFFF);
+
   static MaterialColor get mainColor => MaterialColor(
         mainColorSimple.value,
         _mainColorCodes,
       );
-
+  static MaterialColor get mainColorLight => MaterialColor(
+        mainColorSimpleLight.value,
+        _mainColorCodes,
+      );
   static Color get lightColor => Colors.white;
   static Color get darkColor => Colors.black;
 

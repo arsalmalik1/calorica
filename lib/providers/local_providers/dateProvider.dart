@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -30,6 +29,7 @@ class DBDateProductsProvider {
         onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE DateProducts ("
           "id INTEGER PRIMARY KEY,"
+          "name TEXT,"
           "date INTEGER,"
           "ids TEXT"
           ")");
@@ -38,7 +38,7 @@ class DBDateProductsProvider {
 
   Future<DateProducts> addDateProducts(DateProducts dateProducts) async {
     final db = await database;
-
+    final name = dateProducts.name != null ? dateProducts.name : '';
     dateProducts.date = DateTime(
         dateProducts.date.year, dateProducts.date.month, dateProducts.date.day);
     var intDate = epochFromDate(dateProducts.date);
@@ -47,10 +47,11 @@ class DBDateProductsProvider {
     int id = table.first["id"];
 
     var raw = await db.rawInsert(
-        "INSERT Into DateProducts (id, date, ids)"
-        " VALUES (?,?,?)",
+        "INSERT Into DateProducts (id, name, date, ids)"
+        " VALUES (?,?,?,?)",
         [
           id,
+          name,
           intDate,
           dateProducts.ids,
         ]);
@@ -121,6 +122,13 @@ class DBDateProductsProvider {
         ['${products.ids}', '${products.id}']);
   }
 
+  updateNameProducts(int id, String name) async {
+    final db = await database;
+
+    int count = await db.rawUpdate(
+        'UPDATE DateProducts SET name = ? WHERE id = ?', ['$name', '$id']);
+  }
+
   Future<List<DateProducts>> getDates() async {
     final db = await database;
     var res = await db.rawQuery("SELECT * FROM DateProducts");
@@ -128,5 +136,12 @@ class DBDateProductsProvider {
     List<DateProducts> list =
         res.isNotEmpty ? res.map((c) => DateProducts.fromMap(c)).toList() : [];
     return list;
+  }
+
+  Future deleteDateProduct(id) async {
+    final db = await database;
+    var res = await db.rawQuery("DELETE FROM DateProducts WHERE id = $id");
+    print(res);
+    return res;
   }
 }

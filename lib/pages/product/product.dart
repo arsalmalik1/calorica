@@ -3,6 +3,7 @@ import 'package:calorica/common/theme/theme.dart';
 import 'package:calorica/design/theme.dart';
 import 'package:calorica/models/dateAndCalory.dart';
 import 'package:calorica/pages/product/widgets/widgets.dart';
+import 'package:calorica/providers/local_providers/dashMealProvider.dart';
 import 'package:calorica/providers/local_providers/dateProvider.dart';
 import 'package:calorica/providers/local_providers/productProvider.dart';
 import 'package:calorica/providers/local_providers/userProductsProvider.dart';
@@ -14,11 +15,13 @@ import 'package:flutter/material.dart';
 
 import 'package:calorica/models/dbModels.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class ProductPage extends StatefulWidget {
   String _id;
+  UserProduct userProduct;
 
-  ProductPage({String id}) : _id = id;
+  ProductPage({String id, this.userProduct}) : _id = id;
 
   @override
   _ProductPageState createState() => _ProductPageState(_id);
@@ -30,6 +33,8 @@ class _ProductPageState extends State<ProductPage> {
   final _grammController = TextEditingController();
   Product product = Product();
   String name = "";
+  String category = "";
+
   double calory = 0.0;
   double caloryConst = 0.0;
   double squi = 0.0;
@@ -44,6 +49,11 @@ class _ProductPageState extends State<ProductPage> {
   bool canWriteInDB = true;
 
   final _formKey = GlobalKey<FormState>();
+  TextEditingController caloryController = TextEditingController();
+  TextEditingController squiController = TextEditingController();
+  TextEditingController fatController = TextEditingController();
+  TextEditingController carbohController = TextEditingController();
+  double noCarboh = 0.0, noCalory = 0.0, noSqui = 0.0, noFat = 0.0;
 
   setWriteStatus(state) {
     setState() {
@@ -61,19 +71,60 @@ class _ProductPageState extends State<ProductPage> {
   void initState() {
     super.initState();
     _grammController.text = '100.0';
-    DBProductProvider.db.getProductById(int.parse(id)).then((res) {
-      setState(() {
-        product = res;
-        calory = res.calory;
-        squi = res.squi;
-        fat = res.fat;
-        carboh = res.carboh;
-        name = res.name;
+    if (widget.userProduct == null) {
+      DBProductProvider.db.getProductById(int.parse(id)).then((res) {
+        setState(() {
+          product = res;
+          calory = res.calory;
+
+          squi = res.squi;
+          fat = res.fat;
+          carboh = res.carboh;
+          name = res.name;
+          category = res.category;
+
+          noCarboh = carboh / 100;
+          noCalory = calory / 100;
+          noFat = fat / 100;
+          noSqui = squi / 100;
+
+          caloryController.text = calory.toString();
+          squiController.text = squi.toString();
+          fatController.text = fat.toString();
+          carbohController.text = carboh.toString();
+        });
       });
-    });
+    } else {
+      setState(() {
+        calory = widget.userProduct.calory;
+        squi = widget.userProduct.squi;
+        fat = widget.userProduct.fat;
+        carboh = widget.userProduct.carboh;
+        name = widget.userProduct.name;
+        category = widget.userProduct.category;
+        product = Product(
+            name: name,
+            calory: calory,
+            category: category,
+            squi: squi,
+            fat: fat,
+            carboh: carboh);
+
+        noCarboh = carboh / 100;
+        noCalory = calory / 100;
+        noFat = fat / 100;
+        noSqui = squi / 100;
+
+        caloryController.text = calory.toString();
+        squiController.text = squi.toString();
+        fatController.text = fat.toString();
+        carbohController.text = carboh.toString();
+      });
+    }
   }
 
   void multiData(double grams) {
+    _grammController.text = grams.toString();
     double multiplier = grams / 100;
     setState(() {
       gramsEditing = roundDouble(grams, 1);
@@ -81,16 +132,85 @@ class _ProductPageState extends State<ProductPage> {
       squi = roundDouble(product.squi * multiplier, 2);
       fat = roundDouble(product.fat * multiplier, 2);
       carboh = roundDouble(product.carboh * multiplier, 2);
+      caloryController.text = calory.toString();
+      squiController.text = squi.toString();
+      fatController.text = fat.toString();
+      carbohController.text = carboh.toString();
+    });
+  }
+
+  void caloryBaseData(double grams) {
+    _grammController.text = roundDouble(grams, 2).toString();
+
+    double multiplier = grams / 100;
+    setState(() {
+      gramsEditing = roundDouble(grams, 1);
+      squi = roundDouble(product.squi * multiplier, 2);
+      fat = roundDouble(product.fat * multiplier, 2);
+      carboh = roundDouble(product.carboh * multiplier, 2);
+      squiController.text = squi.toString();
+      fatController.text = fat.toString();
+      carbohController.text = carboh.toString();
+    });
+  }
+
+  void fatBaseData(double grams) {
+    _grammController.text = roundDouble(grams, 2).toString();
+
+    double multiplier = grams / 100;
+    setState(() {
+      gramsEditing = roundDouble(grams, 1);
+      squi = roundDouble(product.squi * multiplier, 2);
+      calory = roundDouble(product.calory * multiplier, 2);
+      carboh = roundDouble(product.carboh * multiplier, 2);
+      squiController.text = squi.toString();
+      caloryController.text = calory.toString();
+      carbohController.text = carboh.toString();
+    });
+  }
+
+  void squiBaseData(double grams) {
+    _grammController.text = roundDouble(grams, 2).toString();
+
+    double multiplier = grams / 100;
+    setState(() {
+      gramsEditing = roundDouble(grams, 1);
+      calory = roundDouble(product.calory * multiplier, 2);
+      fat = roundDouble(product.fat * multiplier, 2);
+      carboh = roundDouble(product.carboh * multiplier, 2);
+      caloryController.text = calory.toString();
+      fatController.text = fat.toString();
+      carbohController.text = carboh.toString();
+    });
+  }
+
+  void carbohBaseData(double grams) {
+    _grammController.text = roundDouble(grams, 2).toString();
+
+    double multiplier = grams / 100;
+    setState(() {
+      gramsEditing = roundDouble(grams, 1);
+      squi = roundDouble(product.squi * multiplier, 2);
+      fat = roundDouble(product.fat * multiplier, 2);
+      calory = roundDouble(product.calory * multiplier, 2);
+      squiController.text = squi.toString();
+      fatController.text = fat.toString();
+      caloryController.text = calory.toString();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context, "/navigator/2");
+              if (widget.userProduct != null) {
+                Get.back();
+              } else {
+                Navigator.popAndPushNamed(context, "/navigator/2");
+              }
               // _bannerAd?.dispose();
             },
             icon: Icon(
@@ -144,6 +264,7 @@ class _ProductPageState extends State<ProductPage> {
                                 if (_formKey.currentState.validate()) {}
                                 multiData(double.parse(text));
                               },
+                              keyboardType: TextInputType.number,
                               controller: _grammController,
                               style: DesignTheme.inputText,
                               cursorColor: CustomTheme.mainColor,
@@ -153,6 +274,7 @@ class _ProductPageState extends State<ProductPage> {
                                 suffixIcon:
                                     Icon(FontAwesomeIcons.weightHanging),
                               ),
+                              // ignore: missing_return
                               validator: (value) {
                                 if (value.isEmpty) {
                                   setWriteStatus(false);
@@ -179,12 +301,34 @@ class _ProductPageState extends State<ProductPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             ProductParamPanel(
+                              type: TextInputType.number,
                               value: calory,
                               title: "кКал",
+                              controller: caloryController,
+                              onChanged: (v) {
+                                if (v == '') {
+                                  v = '0.0';
+                                }
+                                calory = double.parse(v);
+                                double totalGrams = double.parse(v) / noCalory;
+                                print(totalGrams);
+                                caloryBaseData(totalGrams);
+                              },
                             ),
                             ProductParamPanel(
+                              type: TextInputType.number,
                               value: squi,
                               title: "Белки г.",
+                              controller: squiController,
+                              onChanged: (v) {
+                                if (v == '') {
+                                  v = '0.0';
+                                }
+                                squi = double.parse(v);
+                                double totalGrams = double.parse(v) / noSqui;
+                                print(totalGrams);
+                                squiBaseData(totalGrams);
+                              },
                             ),
                           ],
                         ),
@@ -193,16 +337,62 @@ class _ProductPageState extends State<ProductPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             ProductParamPanel(
+                              type: TextInputType.number,
                               value: fat,
                               title: "Жир г.",
+                              controller: fatController,
+                              onChanged: (v) {
+                                if (v == '') {
+                                  v = '0.0';
+                                }
+                                double totalGrams = double.parse(v) / noFat;
+                                print(totalGrams);
+                                fat = double.parse(v);
+                                fatBaseData(totalGrams);
+                              },
                             ),
                             ProductParamPanel(
+                              type: TextInputType.number,
                               value: carboh,
                               title: "Углеводы г.",
+                              controller: carbohController,
+                              onChanged: (v) {
+                                if (v == '') {
+                                  v = '0.0';
+                                }
+
+                                double totalGrams = double.parse(v) / noCarboh;
+                                print(totalGrams);
+                                carboh = double.parse(v);
+                                carbohBaseData(totalGrams);
+                              },
                             ),
                           ],
                         )
                       ],
+                    ),
+                    SingleChildScrollView(
+                      child: Container(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'описание',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: CustomTheme.mainColor),
+                            ),
+                            Text(
+                              category,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -211,17 +401,26 @@ class _ProductPageState extends State<ProductPage> {
                     color: Theme.of(context).accentColor,
                     onPressed: () {
                       UserProduct productSend = UserProduct(
+                        id: widget.userProduct != null
+                            ? widget.userProduct.id
+                            : null,
                         name: name,
                         category: product.category,
                         calory: calory,
                         carboh: carboh,
                         squi: squi,
                         fat: fat,
+                        date: widget.userProduct != null
+                            ? widget.userProduct.date
+                            : null,
                         grams: gramsEditing,
                         productId: int.parse(id),
                       );
-
-                      addProduct(productSend);
+                      if (widget.userProduct != null) {
+                        updateProduct(productSend);
+                      } else {
+                        addProduct(productSend);
+                      }
                     },
                     child: Text(
                       'Добавить',
@@ -244,8 +443,19 @@ class _ProductPageState extends State<ProductPage> {
     DateAndCalory res = await DBUserProductsProvider.db.addProduct(nowClient);
     if (res != null) {
       DBDateProductsProvider.db.getPoductsByDate(res.date, res.id);
+      DBDashMealProvider.db.getPoductsByDate(res.date, res.id);
       Navigator.popAndPushNamed(context, '/navigator/1');
     }
+  }
+
+  updateProduct(UserProduct nowClient) async {
+    await DBUserProductsProvider.db.updateProduct(nowClient).then((value) {
+      Get.back(result: 'refresh');
+    });
+    // if (res != null) {
+    //   DBDateProductsProvider.db.getPoductsByDate(res.date, res.id);
+    //   Navigator.popAndPushNamed(context, '/navigator/1');
+    // }
   }
 
   String splitText(String text) {
