@@ -64,9 +64,12 @@ getParamText(
 
   return Text(
     (todayCalory < yesterdayCalory)
-        ? "-" + checkThousands((todayCalory - yesterdayCalory).abs()).toString()
+        ? "-" +
+            checkThousands((todayCalory - yesterdayCalory).abs())
+                .toStringAsFixed(2)
         : "+" +
-            checkThousands((todayCalory - yesterdayCalory).abs()).toString(),
+            checkThousands((todayCalory - yesterdayCalory).abs())
+                .toStringAsFixed(2),
     textAlign: TextAlign.start,
     style: TextStyle(
       fontSize: 18.0,
@@ -94,9 +97,12 @@ getOtherParamText(double todayParam, double yesterdayParam) {
 
   return Text(
     (todayParam < yesterdayParam)
-        ? "-" + (roundDouble((todayParam - yesterdayParam), 1).abs()).toString()
+        ? "-" +
+            (roundDouble((todayParam - yesterdayParam), 1).abs())
+                .toStringAsFixed(2)
         : "+" +
-            (roundDouble((todayParam - yesterdayParam), 1).abs()).toString(),
+            (roundDouble((todayParam - yesterdayParam), 1).abs())
+                .toStringAsFixed(2),
     textAlign: TextAlign.start,
     style: TextStyle(
       fontSize: 18.0,

@@ -61,7 +61,7 @@ class WishListBar extends StatelessWidget {
           ),
           ToolBarIconButton(
             icon: Icon(
-              FontAwesomeIcons.add,
+              FontAwesomeIcons.plus,
               color: theme.accentColor,
             ),
             onTap: () async {

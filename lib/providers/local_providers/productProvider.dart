@@ -104,7 +104,7 @@ class DBProductProvider {
     final db = await database;
     var res =
         // await db.rawQuery("SELECT * FROM Products LIMIT 20 OFFSET '$offset'");
-        await db.rawQuery("SELECT * FROM Products ORDER BY id DESC");
+        await db.rawQuery("SELECT * FROM Products");
 
     List<Product> list =
         res.isNotEmpty ? res.map((c) => Product.fromMap(c)).toList() : [];

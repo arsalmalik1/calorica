@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../../providers/local_providers/meal_product_history.dart';
 import '../../utils/dateHelpers/dateFromInt.dart';
 import '../../utils/doubleRounder.dart';
 import '../days/day_meals.dart';
@@ -59,6 +60,10 @@ class _MainStatsState extends State<MainStats> {
   @override
   void initState() {
     super.initState();
+    getDetails();
+  }
+
+  getDetails() {
     getProductsCaloryByDateList().then((_weekStats) {
       setState(() {
         weekStats = _weekStats;
@@ -71,79 +76,6 @@ class _MainStatsState extends State<MainStats> {
         caloryLimitDeltaR = caloryLimit * 1.2;
       });
       getDashMealProduct();
-      // DBUserProductsProvider.db.getTodayProducts().then((todayProd) {
-      //   DBUserProductsProvider.db.getYesterdayProducts().then((yesterdayProd) {
-      //     setState(() {
-      //       todayParams = getProductsParamsSum(todayProd);
-      //       yesterdayParams = getProductsParamsSum(yesterdayProd);
-      //     });
-      //     setState(() {
-      //       _chartData = createSampleData(weekStats);
-      //       _seriesData = generateData(
-      //         yesterdayParams,
-      //         todayParams,
-      //         caloryLimitDeltaR,
-      //         caloryLimitDeltaL,
-      //       );
-      //       chartsWidgetList.removeLast();
-      //       chartsWidgetList.add(
-      //         getBarGraph(
-      //           context,
-      //           _seriesData,
-      //           caloryLimitDeltaL,
-      //           caloryLimitDeltaR,
-      //           todayParams,
-      //           yesterdayParams,
-      //         ),
-      //       );
-      //       chartsWidgetList.add(
-      //         getLineGraph(
-      //           context,
-      //           _chartData,
-      //         ),
-      //       );
-      //       lineTextList.add(getOtherParamTextColumn(
-      //         todayParams,
-      //         yesterdayParams,
-      //         ' кКалорий',
-      //         getParamText(todayParams, yesterdayParams, caloryLimitDeltaR,
-      //             caloryLimitDeltaL),
-      //       ));
-      //       lineTextList.add(
-      //         getOtherParamTextColumn(
-      //           todayParams.squi,
-      //           yesterdayParams.squi,
-      //           " г. белков",
-      //           getOtherParamText(todayParams.squi, yesterdayParams.squi),
-      //         ),
-      //       );
-      //       lineTextList.add(
-      //         getOtherParamTextColumn(
-      //           todayParams.fat,
-      //           yesterdayParams.fat,
-      //           " г. жиров",
-      //           getOtherParamText(todayParams.fat, yesterdayParams.fat),
-      //         ),
-      //       );
-      //       lineTextList.add(
-      //         getOtherParamTextColumn(
-      //           todayParams.carboh,
-      //           yesterdayParams.carboh,
-      //           " г. углеводов",
-      //           getOtherParamText(todayParams.carboh, yesterdayParams.carboh),
-      //         ),
-      //       );
-      //       lineTextList.add(
-      //         getOtherParamTextColumn(
-      //           todayParams.grams,
-      //           yesterdayParams.grams,
-      //           " грамм",
-      //           getOtherParamText(todayParams.grams, yesterdayParams.grams),
-      //         ),
-      //       );
-      //     });
-      //   });
-      // });
     });
   }
 
@@ -168,6 +100,7 @@ class _MainStatsState extends State<MainStats> {
                 squi: product.squi,
                 carboh: product.carboh,
                 grams: product.gram,
+                date: DateTime.now(),
                 productId: product.productID));
           }
         });
@@ -179,7 +112,9 @@ class _MainStatsState extends State<MainStats> {
             echoDate(DateTime.now().subtract(Duration(days: 1))), 1)
         .then((meals) async {
       for (DashMeal meal in meals) {
-        await DBDashMealProductProvider.db
+        // await DBDashMealProductProvider.db
+        //     .getProductByMealID(meal.id)
+        await DBMealProductHistoryProvider.db
             .getProductByMealID(meal.id)
             .then((products) {
           for (WishlistMealProduct product in products) {
@@ -192,6 +127,7 @@ class _MainStatsState extends State<MainStats> {
                 squi: product.squi,
                 carboh: product.carboh,
                 grams: product.gram,
+                date: DateTime.now().subtract(Duration(days: 1)),
                 productId: product.productID));
           }
         });
@@ -209,12 +145,16 @@ class _MainStatsState extends State<MainStats> {
     return now;
   }
 
-  setProductsValues(todayProd, yesterdayProd) {
+  setProductsValues(
+      List<UserProduct> todayProd, List<UserProduct> yesterdayProd) {
     setState(() {
       todayParams = getProductsParamsSum(todayProd);
       yesterdayParams = getProductsParamsSum(yesterdayProd);
     });
 
+    weekStats = [...yesterdayProd, ...todayProd];
+
+    print(weekStats);
     setState(() {
       _chartData = createSampleData(weekStats);
       _seriesData = generateData(
@@ -253,32 +193,35 @@ class _MainStatsState extends State<MainStats> {
       ));
       lineTextList.add(
         getOtherParamTextColumn(
-          todayParams.squi,
-          yesterdayParams.squi,
+          todayParams.squi.roundToDouble(),
+          yesterdayParams.squi.roundToDouble(),
           " г. белков",
-          getOtherParamText(todayParams.squi, yesterdayParams.squi),
+          getOtherParamText(todayParams.squi.roundToDouble(),
+              yesterdayParams.squi.roundToDouble()),
         ),
       );
       lineTextList.add(
         getOtherParamTextColumn(
-          todayParams.fat,
-          yesterdayParams.fat,
+          todayParams.fat.roundToDouble(),
+          yesterdayParams.fat.roundToDouble(),
           " г. жиров",
-          getOtherParamText(todayParams.fat, yesterdayParams.fat),
+          getOtherParamText(todayParams.fat.roundToDouble(),
+              yesterdayParams.fat.roundToDouble()),
         ),
       );
       lineTextList.add(
         getOtherParamTextColumn(
-          todayParams.carboh,
-          yesterdayParams.carboh,
+          todayParams.carboh.roundToDouble(),
+          yesterdayParams.carboh.roundToDouble(),
           " г. углеводов",
-          getOtherParamText(todayParams.carboh, yesterdayParams.carboh),
+          getOtherParamText(todayParams.carboh.roundToDouble(),
+              yesterdayParams.carboh.roundToDouble()),
         ),
       );
       lineTextList.add(
         getOtherParamTextColumn(
-          todayParams.grams,
-          yesterdayParams.grams,
+          todayParams.grams.roundToDouble(),
+          yesterdayParams.grams.roundToDouble(),
           " грамм",
           getOtherParamText(todayParams.grams, yesterdayParams.grams),
         ),

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:calorica/models/dbModels.dart';
 import 'package:get/get.dart';
 
+import '../../utils/dataLoader.dart';
 import '../forms/fooditem_form.dart';
 import '../wishlist/wishlist_product_card.dart';
 import 'food_item_card.dart';
