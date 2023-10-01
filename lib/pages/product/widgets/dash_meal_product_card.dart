@@ -13,11 +13,13 @@ class DashMealProductCard extends StatelessWidget {
       @required this.product,
       this.isLastItem = false,
       this.onAddFoodPress,
+      this.removeMealFoodItem,
       @required this.onPress})
       : super(key: key);
   final Function onPress, onAddFoodPress;
   final WishlistMealProduct product;
   final bool isLastItem;
+  final Function removeMealFoodItem;
 
   @override
   Widget build(BuildContext context) {
@@ -36,38 +38,48 @@ class DashMealProductCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: size.width * 0.7,
-                    child: Text(
-                      product.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        letterSpacing: -0.2,
-                        color: DesignTheme.blackLightTextColor,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      width: size.width * 0.7,
+                      child: Text(
+                        product.name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          letterSpacing: -0.2,
+                          color: DesignTheme.blackLightTextColor,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    product.calory.toString() +
-                        " кКал     " +
-                        product.squi.toString() +
-                        " Б     " +
-                        product.fat.toString() +
-                        " Ж     " +
-                        product.carboh.toString() +
-                        " У",
-                    style: DesignTheme.secondaryText.copyWith(
-                      fontWeight: FontWeight.w600,
+                    SizedBox(height: 8),
+                    Text(
+                      product.calory.toString() +
+                          " кКал     " +
+                          product.squi.toString() +
+                          " Б     " +
+                          product.fat.toString() +
+                          " Ж     " +
+                          product.carboh.toString() +
+                          " У",
+                      style: DesignTheme.secondaryText.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              IconButton(
+                  onPressed: () {
+                    removeMealFoodItem(product.id);
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.orange,
+                  ))
             ],
           ),
         ),

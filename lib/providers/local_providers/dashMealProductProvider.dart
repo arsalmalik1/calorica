@@ -192,4 +192,10 @@ class DBDashMealProductProvider {
         ]);
     return count;
   }
+
+  Future deleteProductsByID(id) async {
+    final db = await database;
+    var res = await db.rawQuery("DELETE FROM DashMealProducts WHERE id = $id");
+    return res;
+  }
 }
