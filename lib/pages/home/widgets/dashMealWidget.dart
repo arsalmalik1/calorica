@@ -50,11 +50,12 @@ class DashMealWidget extends StatefulWidget {
       this.callback,
       this.diet,
       this.onAddPress,
+      this.removeMealFoodItem,
       this.onPress})
       : _date = date;
   DateProducts data;
   DashMeal dashMeal;
-  Function onPress, onAddPress;
+  Function onPress, onAddPress, removeMealFoodItem;
   @override
   _DashMealWidgetState createState() => _DashMealWidgetState(_date);
 }
@@ -169,6 +170,9 @@ class _DashMealWidgetState extends State<DashMealWidget> {
                       child: DashMealProductCard(
                         isLastItem: (foodItems.length - 1) == index,
                         product: foodItems[index],
+                        removeMealFoodItem: (int id) {
+                          widget.removeMealFoodItem(id, foodItems.length);
+                        },
                         onAddFoodPress: () async {
                           Product product = await Get.to(() => AddPage(
                                 isExtraFood: true,

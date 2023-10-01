@@ -412,6 +412,20 @@ class _HomeState extends State<Home> {
                                 itemBuilder: (context, i) {
                                   return DashMealWidget(
                                     diet: diet,
+                                    removeMealFoodItem: (id, len) {
+                                      DBDashMealProductProvider.db
+                                          .deleteProductsByID(id)
+                                          .then((_) async {
+                                        if (len == 1) {
+                                          await DBDashMealProvider.db
+                                              .deleteDashMeal(
+                                                  snapshot.data[i].id);
+                                        }
+
+                                        getDashMeal();
+                                        setState(() {});
+                                      });
+                                    },
                                     onAddPress: () {
                                       getDashMeal();
                                       setState(() {});
